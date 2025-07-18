@@ -5,6 +5,8 @@ import by.antohakon.jdbctest.exceptions.BookNotFoundException;
 import by.antohakon.jdbctest.repository.BookRepositoryJdbcTemplate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,9 +16,11 @@ import java.util.List;
 public class BookServiceJdbcTemplate implements BookService {
 
     private final BookRepositoryJdbcTemplate bookRepository;
+    private final KafkaTemplate<String, String> kafkaTemplate;
 
     @Override
     public List<Book> findAll() {
+        kafkaTemplate.send("web_topic","Сообщение с библиотеки");
         return bookRepository.findAll();
     }
 
